@@ -76,5 +76,12 @@ rustPlatform.buildRustPackage {
       [ -n "$found" ] && cp "$found" $out/lib/libanowaw.a
     fi
     cp ../../include/anowaw.h $out/include/ 2>/dev/null || true
+
+    # Ship the Kotlin/JNI shims so the Wawona Android build can stage them into
+    # the app sourceSet + CMake sources (sourceRoot is source/core, so the repo
+    # root is two levels up).
+    mkdir -p $out/share/anowaw/kotlin $out/share/anowaw/jni
+    cp ../../platform/android/kotlin/*.kt $out/share/anowaw/kotlin/ 2>/dev/null || true
+    cp ../../platform/android/jni/*.c $out/share/anowaw/jni/ 2>/dev/null || true
   '';
 }
