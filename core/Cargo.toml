@@ -1,0 +1,29 @@
+[package]
+name = "anowaw"
+version = "0.1.0"
+edition = "2021"
+description = "anowaW bridge core: renders native macOS/Android app surfaces as Wayland clients inside Wawona's nested-Weston desktop."
+license = "MIT"
+repository = "https://github.com/Wawona/wwn-anowaW"
+
+# Static + rlib so the Wawona app can link the C ABI in-process (matching the
+# waypipe_main linkage model), while tests/tools can use it as a Rust crate.
+[lib]
+name = "anowaw"
+crate-type = ["staticlib", "rlib", "cdylib"]
+
+# NOTE: smithay-client-toolkit is deliberately NOT used: SCTK does not compile
+# on Apple targets (rustix pipe APIs gated out on macOS/iOS). The bridge speaks
+# raw wayland-client + wayland-protocols instead, which are pure-Rust and
+# portable to macOS, iOS, and Android.
+[dependencies]
+wayland-client = "0.31"
+wayland-protocols = { version = "0.32", features = ["client"] }
+memmap2 = "0.9"
+log = "0.4"
+
+[features]
+default = []
+# Enables the zwp_linux_dmabuf_v1 import path (zero-copy). When off, the bridge
+# falls back to wl_shm frame uploads. Wawona sets this per-platform.
+dmabuf = []

@@ -1,0 +1,8 @@
+result
+result-*
+.direnv/
+.DS_Store
+__pycache__/
+*.pyc
+target/
+Cargo.lock.bak
