@@ -22,10 +22,7 @@ in
 pkgs.rustPlatform.buildRustPackage {
   pname = "anowaw";
   version = "0.1.0";
-  src = anowawSrc;
-
-  # The crate lives in core/ inside the staged source tree.
-  sourceRoot = "source/core";
+  src = "${anowawSrc}/source/core";
 
   cargoLock = {
     lockFile = ./Cargo.lock;
@@ -62,11 +59,11 @@ pkgs.rustPlatform.buildRustPackage {
   # Compile the ScreenCaptureKit + CGEvent shim and bundle it next to the lib so
   # the Wawona app links both. The shim drives the Rust core through the C ABI.
   postBuild = ''
-    SHIM=../platform/macos/AnowawMacBridge.m
+    SHIM=${anowawSrc}/source/platform/macos/AnowawMacBridge.m
     if [ -f "$SHIM" ]; then
       clang -c "$SHIM" \
         -fobjc-arc -fPIC \
-        -I../../include \
+        -I${anowawSrc}/source/include \
         -isysroot "$SDKROOT" -mmacosx-version-min=26.0 \
         -o anowaw_mac_shim.o || echo "warning: shim compile deferred (SDK frameworks)"
     fi
@@ -89,7 +86,12 @@ pkgs.rustPlatform.buildRustPackage {
       exit 1
     fi
     [ -f anowaw_mac_shim.o ] && cp anowaw_mac_shim.o $out/lib/ || true
-    cp ../../include/anowaw.h $out/include/ 2>/dev/null || true
+    cp ${anowawSrc}/source/include/anowaw.h $out/include/ 2>/dev/null || true
+    # Also export the ObjC capture/inject shim header so downstream consumers
+    # (the Wawona macOS app's WWNAnowaWController) can #import "AnowawMacBridge.h"
+    # and link the shim object above. Without this the consumer falls back to its
+    # no-op stub (guarded by __has_include).
+    cp ${anowawSrc}/source/platform/macos/AnowawMacBridge.h $out/include/ 2>/dev/null || true
   '';
 
   doCheck = false;

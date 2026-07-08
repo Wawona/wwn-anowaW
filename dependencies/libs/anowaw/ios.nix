@@ -31,8 +31,7 @@ in
 rustPlatform.buildRustPackage {
   pname = "anowaw";
   version = "0.1.0";
-  src = anowawSrc;
-  sourceRoot = "source/core";
+  src = "${anowawSrc}/source/core";
   __noChroot = true;
 
   cargoLock = {
@@ -69,6 +68,6 @@ rustPlatform.buildRustPackage {
       echo "ERROR: libanowaw.a not found" >&2
       exit 1
     fi
-    cp ../../include/anowaw.h $out/include/ 2>/dev/null || true
+    cp ${anowawSrc}/source/include/anowaw.h $out/include/ 2>/dev/null || true
   '';
 }

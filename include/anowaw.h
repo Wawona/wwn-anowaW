@@ -46,7 +46,7 @@ typedef enum {
 typedef struct {
     uint64_t handle;   /* target bridged app */
     uint32_t kind;     /* AnowawInputKind */
-    uint32_t code;     /* evdev KEY_*/BTN_* code, touch id, or modifier mask */
+    uint32_t code;     /* evdev KEY_/BTN_* code, touch id, or modifier mask */
     int32_t  value;    /* press/release/phase/enter-leave value */
     double   x;        /* surface-local X or horizontal axis delta */
     double   y;        /* surface-local Y or vertical axis delta */

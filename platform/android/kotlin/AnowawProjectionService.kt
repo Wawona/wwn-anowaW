@@ -65,14 +65,19 @@ class AnowawProjectionService : Service() {
         }
 
         val mpm = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        projection = mpm.getMediaProjection(resultCode, data).also { mp ->
-            mp.registerCallback(object : MediaProjection.Callback() {
-                override fun onStop() {
-                    Log.i(TAG, "MediaProjection stopped by system/user")
-                    stopSelf()
-                }
-            }, null)
+        val mediaProjection = mpm.getMediaProjection(resultCode, data)
+        if (mediaProjection == null) {
+            Log.e(TAG, "MediaProjectionManager returned null projection; stopping")
+            stopSelf()
+            return START_NOT_STICKY
         }
+        projection = mediaProjection
+        mediaProjection.registerCallback(object : MediaProjection.Callback() {
+            override fun onStop() {
+                Log.i(TAG, "MediaProjection stopped by system/user")
+                stopSelf()
+            }
+        }, null)
         Log.i(TAG, "anowaW baseline projection active")
         // The AnowawBridge / capture wiring reads `projection` via the app's
         // service binder or a shared holder; kept minimal here.

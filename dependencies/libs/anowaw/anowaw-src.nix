@@ -21,10 +21,10 @@ pkgs.stdenvNoCC.mkDerivation {
   dontFixup = true;
 
   installPhase = ''
-    mkdir -p $out
-    cp -r core $out/core
-    cp -r platform $out/platform
-    cp -r include $out/include 2>/dev/null || true
+    mkdir -p $out/source
+    cp -r core $out/source/core
+    cp -r platform $out/source/platform
+    cp -r include $out/source/include 2>/dev/null || true
   '';
 
   meta = {
