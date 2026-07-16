@@ -14,7 +14,7 @@ jobs:
     name: flake eval (instantiation)
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           determinate: true
@@ -31,8 +31,8 @@ jobs:
     name: verify C ABI anchors
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: verify ABI anchors present
@@ -43,7 +43,7 @@ jobs:
     runs-on: macos-15
     needs: [eval, abi-anchors]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           determinate: true
